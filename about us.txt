@@ -1,4 +1,5 @@
 About Us
+What's Gestion note
 Gestion Note is test a program and school project in 
 the same time, whose goal is to store student
 information like names and marks inside a text file.
@@ -6,8 +7,8 @@ information like names and marks inside a text file.
 Why I Created Gestion Note
 Our mission behind this simple program is to use all
 of my programming knowledge in order to gain experience
-and add improve my  knowledge code, ultimately helping
-me in my future careers.
+and make some improvement to my skills, ultimately helping
+me to build a strong software background.
 
 Contact Us
 Email: lotfi.abaaya@gmail.com
