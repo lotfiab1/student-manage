@@ -37,7 +37,7 @@ int main() {
 
     char line[1024];
 while (fgets(line, sizeof(line), file) != NULL) {
-    int R;
+    int R,i,j;
     char id[12];
     char lastName[52];
     char firstName[52];
@@ -74,23 +74,23 @@ while (fgets(line, sizeof(line), file) != NULL) {
         exit(1);
     }
 
-    for (int i = 0; i < numStudents; i++) {
+    for (i = 0; i < numStudents; i++) {
         fprintf(file, "Student_Id: %s,Last_Name: %s,First_Name: %s,Number_Of_Grades: %d,Grades: ",students[i].id, students[i].lastName, students[i].firstName, students[i].R);
-        for (int j=0; j < students[i].R - 1; j++){
+        for (j=0; j < students[i].R - 1; j++){
         	fprintf(file, "%.2f,", students[i].grades[j]);
         }
         fprintf(file, "%.2f\n", students[i].grades[students[i].R - 1]);
     }
     
     fclose(file);
-    for(int i=0;i<numStudents;i++){
+    for(i=0;i<numStudents;i++){
 	
-    free(students[i].firstName);
-    free(students[i].lastName);
-    free(students[i].grades);
-    students[i].firstName=NULL;
-    students[i].lastName=NULL;
-    students[i].grades=NULL;
+    free((students+i)->firstName);
+    free((students+i)->lastName);
+    free((students+i)->grades);
+    (students+i)->firstName=NULL;
+    (students+i)->lastName=NULL;
+    (students+i)->grades=NULL;
     
 }
     free(students);
@@ -99,7 +99,7 @@ while (fgets(line, sizeof(line), file) != NULL) {
 
 
 void Menu() {
-int choice;
+int i,choice;
 char id[11];
 while(1) {
     printf("\n\t\t\t\033[1;34m-------------------------------------------------\n");
@@ -150,18 +150,16 @@ while(1) {
 			   break;    
         case 9:
         	printf("\nExiting program..");
-        	for(int i=0;i<4;i++){
-             printf(".");
-             sleep(1);
-			}
-            
-            return;
+        	for(i=0;i<4;i++){
+                printf(".");
+                sleep(1);
+	        return;
         default:
             printf("\033[1;31mError: Invalid choice\033[0m\n");
             break;
     }
     printf("\nredirected to menu..");
-    for(int i=0;i<4;i++){
+    for(i=0;i<4;i++){
     	printf(".");
     	sleep(1);
 	}
@@ -171,6 +169,7 @@ while(1) {
 }
 
 void addStudent() {
+    int i;
     if (numStudents == MAX_STUDENTS) {
         printf("\033[1;31mError: Maximum number of students reached\033[0m\n");
         return;
@@ -186,7 +185,7 @@ void addStudent() {
     fgets(newStudent.id, 12, stdin); 
     newStudent.id[strcspn(newStudent.id, "\n")] = '\0';
 
-    for (int i = 0; i < numStudents; i++) {
+    for (i = 0; i < numStudents; i++) {
         if (strcmp(students[i].id, newStudent.id) == 0) {
             printf("\n\033[1;31mERROR:This Id is used by other student !!\033[0m\n");
             while (strcmp(students[i].id, newStudent.id) == 0) {
@@ -216,7 +215,7 @@ void addStudent() {
     scanf("%d", &newStudent.R);
 
     printf("==>Enter the %d grades of the student separated by spaces: ", newStudent.R);
-    for (int i = 0; i < newStudent.R; i++) {
+    for (i = 0; i < newStudent.R; i++) {
         scanf("%f", &newStudent.grades[i]);
     }
 
@@ -241,7 +240,8 @@ void addStudent() {
     free(newStudent.grades);
 }
 void displayStudent(char id[11]) {
-    for (int i = 0; i < numStudents; i++) {
+    int i,j;
+    for (i = 0; i < numStudents; i++) {
         if (strcasecmp(students[i].id, id) == 0) {
             printf("\n\033[1;36m-------------------------------------------Student Details------------------------------------------------\n");
             printf("\tId Massar : %s\n", students[i].id);
@@ -249,7 +249,7 @@ void displayStudent(char id[11]) {
             printf("\tFirst Name : %s\n", students[i].firstName);
             printf("\tNumber of Grades : %d\n", students[i].R);
             printf("\tGrades :");
-            for (int j = 0; j < students[i].R; j++) {
+            for (j = 0; j < students[i].R; j++) {
                 printf(" %.2f", students[i].grades[j]);
             }
             printf("\n-----------------------------------------------------------------------------------------------------------\033[1;36m\n");
@@ -262,18 +262,19 @@ void displayStudent(char id[11]) {
 
 }
 void displayAllStudents() {
+	int i,j;
     if (numStudents == 0) {
         printf("\nNo students to display.\n");
         return;
     }
     printf("\n\033[1;36m-------------------------------------------Student Details------------------------------------------------\n");
-    for (int i = 0; i < numStudents; i++) {
+    for (i = 0; i < numStudents; i++) {
        printf("student %d",i+1); printf("\t");printf("\tId Massar : %s\n", students[i].id);
                                  printf("\t\t");printf("\tLast Name : %s\n", students[i].lastName);
                                  printf("\t\t");printf("\tFirst Name : %s\n", students[i].firstName);
                                  printf("\t\t");printf("\tNumber of Grades : %d\n", students[i].R);
                                  printf("\t\t");printf("\tGrades :");
-        for (int j = 0; j < students[i].R; j++) {
+        for (j = 0; j < students[i].R; j++) {
             printf(" %.2f", students[i].grades[j]);
         }
         printf("\n-----------------------------------------------------------------------------------------------------------\033[1;36m\n");
@@ -281,7 +282,8 @@ void displayAllStudents() {
 }
 
 void modifyStudent(char id[11]) {
-for (int i = 0; i < numStudents; i++) {	
+int i,j,choice;
+for (i = 0; i < numStudents; i++) {	
 char lastName[20];
 char firstName[20];
 int grades[MAX_GRADES];
@@ -292,14 +294,14 @@ if (strcmp(students[i].id, id) == 0) {
             printf("\tFirst Name : %s\n", students[i].firstName);
             printf("\tNumber of Grades : %d\n", students[i].R);
             printf("\tGrades :");
-            for (int j = 0; j < students[i].R-1; j++) {
+            for (j = 0; j < students[i].R-1; j++) {
                 printf(" %.2f ,", students[i].grades[j]);
             }
                  printf(" %.2f", students[i].grades[students[i].R-1]);
             printf("\n------------------------------------------------------------\n");
-        	int choice;
+        	
     while(1){
-	        printf("\n\t\t\t\033[1;31m------------------------------------------------------------\n");
+	    printf("\n\t\t\t\033[1;31m------------------------------------------------------------\n");
             printf("\t\t\t-");printf("\t\tWhat would you like to modify?\t\t ");printf("  -\n");
             printf("\t\t\t-");printf("\t\t1. Last Name    \t\t\t");printf("   -\n");
             printf("\t\t\t-");printf("\t\t2. First Name     \t\t        ");printf("   -\n");
@@ -333,14 +335,13 @@ if (strcmp(students[i].id, id) == 0) {
                     scanf("%d", &students[i].R);
                     printf("Number of grades for student with ID %s has been modified in the records.\n", id);
                     printf("Enter new Grades (separated by spaces): ");
-                    for (int j = 0; j < students[i].R; j++) {
+                    for (j = 0; j < students[i].R; j++) {
                         scanf("%f,", &grades[j]);
                     }
                     students[i].grades=(float*)realloc(students[i].grades,students[i].R*sizeof(float));
                     memcpy((students+i)->grades, grades, sizeof(float) * (students + i)->R);
-                     printf("Grades for student with ID %s have been modified in the records.\n", id);
-
-                     break;
+                    printf("Grades for student with ID %s have been modified in the records.\n", id);
+                    break;
 
                 case 4:
                     printf("Student modified successfully!\n");
@@ -356,9 +357,10 @@ if (strcmp(students[i].id, id) == 0) {
 }
 
 void deleteStudent(char id[11]) {
-for (int i = 0; i < numStudents; i++) {
+int i,j;
+for (i = 0; i < numStudents; i++) {
 if (strcmp(students[i].id, id) == 0) {
-for (int j = i; j < numStudents - 1; j++) {
+for (j = i; j < numStudents - 1; j++) {
 students[j] = students[j + 1];
 }
 numStudents--;
@@ -373,6 +375,7 @@ numStudents--;
 printf("\033[1;31mError: Student not found\033[0m\n");
 }
 void deleteAllStudent() {
+	int i,j;
 	char verify[3];
 	if(numStudents==0){
 		printf("\n\t\t there are no students to delete .\n");
@@ -385,10 +388,10 @@ void deleteAllStudent() {
 	scanf("%s",verify);
 	strlwr(verify);
 	if(strcmp(verify,"yes")==0){
-    for (int i = 0; i < numStudents; i++) {
+    for (i = 0; i < numStudents; i++) {
 
 	
-    for (int j = numStudents-1; j >= i; j--) {
+    for (j = numStudents-1; j >= i; j--) {
     students[j] = students[i-j];
     numStudents--;
            }
@@ -412,7 +415,5 @@ void about_us(){
 		putchar(i);
 	}
 	printf("\n=========================================================================================\n");
-	
-	
 }
 
