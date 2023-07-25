@@ -6,6 +6,7 @@
 #define MAX_STUDENTS 300
 #define MAX_GRADES 10
 #define N 10
+#define filename "etudiant.txt"
 
 typedef struct {
     char *id;
@@ -27,9 +28,9 @@ void displayAllStudents();
 void about_us();
 void modifyStudent(char id[11]);
 void deleteStudent(char id[11]);
-
+void CRT_File();
 int main() {
-    file = fopen("etudiant.txt", "r+");
+    file = fopen(filename, "r+");
     if (file == NULL) {
         printf("\033[1;31mError: Could not open file\033[0m\n");
         exit(1);
@@ -68,7 +69,7 @@ while (fgets(line, sizeof(line), file) != NULL) {
 
     Menu();
 
-    file = fopen("etudiant.txt", "w");
+    file = fopen(filename, "w");
     if (file == NULL) {
         printf("\033[1;31mError: Could not open file\033[0m\n");
         exit(1);
@@ -104,6 +105,7 @@ char id[11];
 while(1) {
     printf("\n\t\t\t\033[1;34m-------------------------------------------------\n");
     printf("\t\t\t-"); printf("       What would you like to do?\t\t");printf("-\n");
+    printf("\t\t\t-"); printf("  0. Creat file \"etudiant.txt\"   \t\t\t");printf("-\n");
     printf("\t\t\t-"); printf("  1. Add a student         \t\t\t");printf("-\n");
     printf("\t\t\t-"); printf("  2. Search for a student     \t\t\t");printf("-\n");
     printf("\t\t\t-"); printf("  3. Display all students  \t\t\t");printf("-\n");
@@ -118,6 +120,9 @@ while(1) {
     scanf("%d",&choice);
 
     switch (choice) {
+	case 0:
+            CRT_File();
+            break;
         case 1:
             addStudent();
             break;
@@ -416,5 +421,10 @@ void about_us(){
 	}
 	printf("\n=========================================================================================\n");
 fclose(p);
+}
+void CRT_File(){
+FILE *fp=fopen(filename,"W");
+fclose(fp);
+return;
 }
 
